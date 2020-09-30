@@ -2,25 +2,25 @@
 
 const storeServices = {
   getAllItems(db) {
-    return db('items_store')
+    return db('store_items')
       .select('*');
   },
   getItemByID(db, id) {
-    return db('items_store')
+    return db('store_items')
       .select('*')
       .where({ id });
   },
   insertNewItem(db, item) {
-    return db('items_store')
+    return db('store_items')
       .insert(item);
   },
   updateItemByID(db, id, update) {
-    return db('items_store')
+    return db('store_items')
       .where({ id })
       .update(update);
   },
   deleteItemByID(db, id) {
-    return db('items_store')
+    return db('store_items')
       .where({ id })
       .delete();
   }

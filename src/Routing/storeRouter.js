@@ -1,7 +1,7 @@
 const express = require('express');
 const storeRouter = express.Router();
 const storeServices = require('../Services/storeServices');
-const bodyParser = express.json();
+// const bodyParser = express.json();
 
 // .all(requireAuth) in appropriate places
 // CRUD OPERATIONS FOR ROUTING
@@ -25,3 +25,5 @@ storeRouter
     storeServices.getItemByID(db, item_id)
       .then(item => res.status(200).json(item));
   });
+
+module.exports = storeRouter;
