@@ -5,6 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const storeRouter = require('./Routing/storeRouter');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 
@@ -14,8 +15,7 @@ app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 
-
-
+bcrypt.compare('password', bcrypt.hashSync('password', 3)).then(res => console.log(res));
 app.use('/store', storeRouter);
 
 app.use(function errorHandler(error, req, res, next) {
