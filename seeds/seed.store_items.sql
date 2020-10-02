@@ -5,10 +5,10 @@ TRUNCATE store_items, store_users
 
 INSERT INTO store_users (username, password)
     VALUES
-('michael', '$2a$04$DYoky779U9z3xue6ZDmb6uGRe9BvtB95IBtorRvqJ7uaDbNm1RZqK'),
-('test-user', '$2a$04$dnbQH1IGLm2UYfyJeSPVGeFW/mvO2eK8xmPNQ1IKW6dcJb.J915G.'),
-('test-user-2', '$2a$04$0Qi2gwiaWH.Ox.IxH6t1ZutnQZjZlaJ0c9mTFoGb0txSD.7aa3FGq'),
-('test-user-3', '$2a$04$C1QcM274mYXr8Bwyf5ESBOtMbvl7woOvfb7sGik4CGGmqs2jCPkxS');
+('michael', '$2a$04$ZDFG22FviMhbES4JEcf8Eunwq41NosgRXcW6UxDF4XVMqXqfmaMPS'),
+('test-user', '$2a$04$ivrtYG/o7QMPJg2sm/OiBONlyOHdtkoDdnuthNCWRqtdlxNPWqVNi'),
+('test-user-2', '$2a$04$pdVG5dylbTSopL7kp7dafexLhfQsvcHwRYR96PBoEoYFEuMDcIlXC'),
+('test-user-3', '$2a$04$0i1ElGjuUVMiYkrIx.bmeeqt4FfKskzajpZeynPw493CgQHtnC4sK');
 
 INSERT INTO store_items (image, name, description, price, user_id)
     VALUES
