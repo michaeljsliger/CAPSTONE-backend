@@ -3,6 +3,7 @@ const storeRouter = express.Router();
 const storeServices = require('../Services/storeServices');
 const bodyParser = express.json();
 const { requireJWT } = require('../middleware/jwt-auth');
+const { DATABASE_URL } = require('../config');
 
 // .all(requireAuth) in appropriate places
 // CRUD OPERATIONS FOR ROUTING
@@ -10,10 +11,18 @@ const { requireJWT } = require('../middleware/jwt-auth');
 // /store
 storeRouter
   .route('/')
-  .get((req, res) => {
+  .get(async (req, res) => {
     const db = req.app.get('db');
+    const users = await storeServices.getAllUsernames(db)
+    
     return storeServices.getAllItems(db)
-      .then(results => res.json(results));
+    .then(results => {
+      for (let i = 0; i < results.length; i++) {
+        const obj = users.find(el => el.id === results[i].user_id)
+        results[i].userNickname = obj.username
+      }
+      return res.json(results)
+      });
   });
 
 storeRouter
@@ -46,8 +55,9 @@ storeRouter
   .all(requireJWT)
   .post(bodyParser, (req, res) => {
     const db = req.app.get('db');
-    const {name, price, image_link, description, user_id, id } = req.body;
+    const {name, price, image_link, description, id } = req.body;
     const image = image_link;
+    const { user_id }  = req.payload;
 
     if (!name || !price || !image_link || !user_id) {
       return res.status(401).json({

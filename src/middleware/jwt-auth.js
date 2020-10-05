@@ -18,6 +18,7 @@ async function requireJWT(req, res, next) {
     const token = authValue.split(' ')[1];
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
+        req.payload = payload;
         next();
     } catch(err) {
         if (err.name.includes('JsonWebTokenError')) {

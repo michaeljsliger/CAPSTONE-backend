@@ -23,6 +23,10 @@ const storeServices = {
     return db('store_items')
       .where({ id })
       .delete();
+  },
+  getAllUsernames(db) {
+    return db('store_users')
+      .select('username', 'id');
   }
 };
 
