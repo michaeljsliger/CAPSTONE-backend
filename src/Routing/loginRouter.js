@@ -50,7 +50,7 @@ authRouter
         } catch(err) {
             next(err)
         }
-    })
+    }) 
 
 module.exports = authRouter;
     

@@ -2,7 +2,7 @@ const express = require('express');
 const storeRouter = express.Router();
 const storeServices = require('../Services/storeServices');
 const bodyParser = express.json();
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireJWT } = require('../middleware/jwt-auth');
 
 // .all(requireAuth) in appropriate places
 // CRUD OPERATIONS FOR ROUTING
@@ -18,14 +18,20 @@ storeRouter
 
 storeRouter
   .route('/:item_id')
-  .all(requireAuth)
+  .all(requireJWT)
   .get((req, res) => {
     const db = req.app.get('db');
     const item_id = req.params.item_id;
     // need an .all earlier for user auth
       
     storeServices.getItemByID(db, item_id)
-      .then(item => res.status(200).json(item));
+      .then(item => {
+        if (!item.length) {
+          return res.status(404).end();
+        }
+
+        res.status(200).json(item);
+      });
   })
   .delete((req, res) => {
     const db = req.app.get('db');
@@ -37,17 +43,20 @@ storeRouter
 
 storeRouter
   .route('/add-item')
-  .all(requireAuth)
+  .all(requireJWT)
   .post(bodyParser, (req, res) => {
-    // .all(requireauth)
     const db = req.app.get('db');
-    const {name, price, image_link, description } = req.body;
+    const {name, price, image_link, description, user_id, id } = req.body;
     const image = image_link;
 
-    // input valid?
+    if (!name || !price || !image_link || !user_id) {
+      return res.status(401).json({
+        message: 'Input invalid: Name, price, and image link are required'
+      });
+    }
 
     const toDBObj = {
-      name, price, image, description
+      name, price, image, description, user_id, id
     };
 
     return storeServices.insertNewItem(db, toDBObj)

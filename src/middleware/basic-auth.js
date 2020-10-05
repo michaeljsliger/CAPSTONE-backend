@@ -18,33 +18,26 @@ function requireAuth(req, res, next) {
   if (!tokenUserName || !tokenPassword) {
     return res.status(401).json({ message: 'Must enter both username and password' });
   }
-  /* ============= */
-  // RE-DO NEW BCRYPT PASSWORDS WITH BTOA
-  /* ============= */
 
   
-//   req.app.get('db')('store_users')
-//     .where({ username: tokenUserName})
-//     .first()
-//     .then(user => {
-//       if (!user || user.password !== tokenPassword) {
-//         return res.status(401).json({ message: 'Username or Password is incorrect' });
-//       }
+  req.app.get('db')('store_users')
+    .where({ username: tokenUserName})
+    .first()
+    .then(user => {
+      if (!user || user.password !== tokenPassword) {
+        return res.status(401).json({ message: 'Username or Password is incorrect' });
+      }
 
-        /* 
-        // replace store_users passwords with bcrypt.hashSync(str, 3);
+      bcrypt.compare(tokenPassword, user.password)
+        .then(isMatch => {
+          if (!isMatch) {
+            return res.status(401).json({ message: 'Username or Password is incorrect' });
+          }
 
-        bcrypt.compare(tokenPassword, user.password)
-            .then(isMatch => {
-                if (!isMatch) {
-                    return res.status(401).json({ message: 'Username or Password is incorrect' });
-                }
-
-                req.user = user;
-                next();
-            })
-        */
-    // });
+          req.user = user;
+          next();
+        });
+    });
 }
 
 

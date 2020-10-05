@@ -2,9 +2,15 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 async function requireJWT(req, res, next) {
-    const authValue = req.get('Authorization').toString();
+    let authValue = req.get('Authorization');
+    if (!authValue) {
+        return res.status(401).json({ 
+            message: 'Missing bearer token'
+        })
+    }
+    authValue = authValue.toString();
     if (!authValue.toLowerCase().startsWith('bearer ')){
-        return res.status(401).json( {
+        return res.status(401).json({
             message: 'Missing bearer token'
         })
     }
@@ -21,4 +27,6 @@ async function requireJWT(req, res, next) {
     }
 }
 // mount to requireAuth places instead
-module.exports = requireJWT;
+module.exports = {
+    requireJWT
+};
