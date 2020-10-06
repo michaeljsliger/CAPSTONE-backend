@@ -28,17 +28,21 @@ storeRouter
 storeRouter
   .route('/:item_id')
   .all(requireJWT)
-  .get((req, res) => {
+  .get(async (req, res) => {
     const db = req.app.get('db');
     const item_id = req.params.item_id;
     // need an .all earlier for user auth
-      
+    const users = await storeServices.getAllUsernames(db)
+    
     storeServices.getItemByID(db, item_id)
-      .then(item => {
-        if (!item.length) {
-          return res.status(404).end();
-        }
-
+    .then(item => {
+      if (!item.length) {
+        return res.status(404).end();
+      }
+        const obj = users.find(el => el.id == item[0].user_id)
+        console.log(obj);
+        item[0].userNickname = obj.username;
+      
         res.status(200).json(item);
       });
   })

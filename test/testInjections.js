@@ -59,7 +59,7 @@ function makeItems() {
             name: 'A generic item',
             description: 'What could go wrong?',
             price: 80,
-            user_id: 2
+            user_id: 2,
         },
     ];
 }

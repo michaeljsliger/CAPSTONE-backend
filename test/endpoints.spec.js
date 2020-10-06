@@ -62,6 +62,11 @@ describe('/store endpoint', () => {
         context('given items in DB', () => {
             beforeEach('insert into tables', async () => {
                 await db('store_users').insert(testUsers);
+                testItems.forEach(el => {
+                    if (el.userNickname) {
+                        delete el.userNickname;
+                    }
+                })
                 await db('store_items').insert(testItems);
             })
             afterEach('cleanup tables', () => {
@@ -72,17 +77,29 @@ describe('/store endpoint', () => {
                 return supertest(app)
                     .get('/store')
                     .set('Authorization', `Bearer ${authService.createJWT(user)}`)
-                    .expect(200, testItems);
+                    .expect(200)
+                    .expect(results => {
+                        const expected = testItems.slice();
+                        for (let i = 1; i <= expected.length; i++ ) {
+                            expected[i-1].userNickname = `test-user-${expected[i-1].user_id}`
+                        }
+
+                        expect(results.body).to.eql(expected)
+                    })
             });
 
             it('/store/:id with auth should respond 200 with item', () => {
                 const findID = 1;
                 const expectedItem = [testItems.find(el => el.id === findID)];
-
+                expectedItem.userNickname = `test-user-${expectedItem.user_id}`;
                 return supertest(app)
                     .get(`/store/${findID}`)
                     .set('Authorization', `Bearer ${authService.createJWT(user)}`)
-                    .expect(200, expectedItem)
+                    .expect(200)
+                    .expect((result) => {
+                        expectedItem[0].userNickname = `test-user-${expectedItem[0].user_id}`;
+                        expect(result.body[0]).to.eql(expectedItem[0]);
+                    })
             });
             it('/store DELETE should work properly', () => {
                 const findID = 1;
@@ -120,7 +137,7 @@ describe('/store endpoint', () => {
                     name: 'yabba dabba doo',
                     description: 'lorem ipsum',
                     price: 79,
-                    user_id: 1
+                    user_id: 1,
                 }
 
                 return supertest(app)
