@@ -24,7 +24,7 @@ authRouter
         const requiredFields = ['username', 'password'];
         const { username, password } = req.body;
         if (!username || !password) {
-            res.status(401).json({ message: 'Username and password required'})
+            return res.status(401).json({ message: 'Username and password required'})
         }
 
         const unBcrypted = Buffer.from(`${username}:${password}`).toString('base64')
