@@ -102,7 +102,8 @@ describe('/store endpoint', () => {
                     })
             });
             it('/store DELETE should work properly', () => {
-                const findID = 1;
+                const findID = 3;
+                
                 return supertest(app)
                     .delete(`/store/${findID}`)
                     .set('Authorization', `Bearer ${authService.createJWT(user)}`)

@@ -46,12 +46,24 @@ storeRouter
         res.status(200).json(item);
       });
   })
-  .delete((req, res) => {
+  .delete(async (req, res) => {
     const db = req.app.get('db');
     const item_id = req.params.item_id;
+    // payload matches 
+    console.log(req.payload);
+    const { user_id }  = req.payload;
+    const itemToDelete = await storeServices.getItemByID(db, item_id);
+    console.log(itemToDelete)
+    if (!itemToDelete) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
 
-    storeServices.deleteItemByID(db, item_id)
+    if (user_id == itemToDelete[0].user_id) {
+      return storeServices.deleteItemByID(db, item_id)
       .then(() => res.status(204).end());
+    } else {
+      return res.status(401).json({ message: 'Unauthorized action' })
+    }
   });
 
 storeRouter
